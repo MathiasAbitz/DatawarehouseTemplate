@@ -1,0 +1,358 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+<#
+
+	string dstConnectionManagerName = "Destination OLEDB";
+	string stgServerName =      "BI-DSA-UDV\\DSA";
+	string Source =    "Bosted";
+	string stgDatabaseName =    "DSO_"+Source;
+	
+
+	string metaConn = String.Format("Data Source={0};Initial Catalog={1};Provider=SQLNCLI11;Integrated Security=SSPI;Application Name=SSIS-{2};",stgServerName, stgDatabaseName, dstConnectionManagerName);
+	DataTable tables = ExternalDataAccess.GetDataTable(metaConn, String.Format("SELECT TABLE_SCHEMA,TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA IN ('dim','fct') OR (TABLE_SCHEMA='stg' AND TABLE_NAME LIKE 'Pre%')"));
+	#>
+
+
+	<Projects>
+		<PackageProject Name="<#=stgDatabaseName#>">
+			<Parameters>
+				<Parameter Name="SolutionName" DataType="String" IsRequired="true"><#=stgDatabaseName#></Parameter>
+				<Parameter Name="TempStoragePath" DataType="String" IsRequired="true">c:\temp</Parameter>
+				<Parameter Name="DSAServerName" DataType="String" IsRequired="true"><#=stgServerName#></Parameter>
+			</Parameters>
+			<Packages>
+				<Package PackageName="MASTER_Pre_DSO_BOSTED"/>
+				<Package PackageName="MASTER_Dim_DSO_BOSTED"/>
+				<Package PackageName="MASTER_FCT_DSO_BOSTED"/>
+<#
+			string tableName = "";
+			string SchemaName = "";
+	foreach (DataRow tab in tables.Rows )
+	{
+	tableName = tab[1].ToString();
+	if(tab[0].ToString()=="dim") 
+	    {	
+	    SchemaName =  "Dimension";
+	        
+	    } 
+	else if (tab[0].ToString()=="fct") 
+	    {	
+	    SchemaName =  "Fact";
+	        
+	    }
+	else 
+	{
+	    SchemaName="PreStg";
+	    
+	}
+	
+	
+	#>
+	<Package PackageName="<#=SchemaName#>_<#=tableName#>"/>
+<#
+			};
+#>
+			</Packages>
+		</PackageProject>
+	</Projects>
+
+	<Connections>
+		
+
+		<OleDbConnection Name="Destination OLEDB" ConnectionString="Provider=SQLNCLI11;Data Source=<#=stgServerName#>;Initial Catalog=<#=stgDatabaseName#>;Integrated security=SSPI;" CreateInProject="true">
+			<Expressions>
+				<Expression PropertyName="ConnectionString">"Provider=SQLNCLI11;Data Source=" + @[$Project::DSAServerName] + ";Initial Catalog=" + @[$Project::SolutionName] + ";Integrated security=SSPI;"</Expression>
+			</Expressions>
+		</OleDbConnection>
+		<AdoNetConnection Name="Destination ADO.NET" Provider="System.Data.SqlClient.SqlConnection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" ConnectionString="Data Source=<#=stgServerName#>;Initial Catalog=<#=stgDatabaseName#>;Integrated security=SSPI;" CreateInProject="true">
+			<Expressions>
+				<Expression PropertyName="ConnectionString">"Data Source=" + @[$Project::DSAServerName] + ";Initial Catalog=" + @[$Project::SolutionName] + ";Integrated security=SSPI;"</Expression>
+			</Expressions>
+		</AdoNetConnection>
+
+	</Connections>
+
+	
+
+<Packages>
+<#
+	foreach (DataRow tab in tables.Rows )
+	{
+	tableName = tab[1].ToString();
+	if(tab[0].ToString()=="dim") 
+	    {	
+	    SchemaName =  "Dimension";
+	        
+	    } 
+	else if (tab[0].ToString()=="fct") 
+	    {	
+	    SchemaName =  "Fact";
+	        
+	    }
+	else 
+	{
+	    SchemaName="PreStg";
+	    
+	}
+	
+	if(tab[0].ToString()=="dim")
+	{
+	#>
+	
+	<Package Name="<#=SchemaName#>_<#=tableName#>" ConstraintMode="Linear" CreatorComputerName="Anonymous" CreatorName="MATBOY / ENVERSION">
+
+
+	<Variables>
+        <Variable Name="DW_ID_Audit" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Audit_EndValue" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Audit_EndValue_Last" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Audit_StartValue" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_AuditDimension" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_DimensionTable" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Solution" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DimensionName" DataType="String" Namespace="User" EvaluateAsExpression="false"><#=tableName#>_<#=Source#></Variable>
+        <Variable Name="RowsInserted" DataType="Int64" Namespace="User">0</Variable>
+        <Variable Name="RowsUpdated" DataType="Int64" Namespace="User">0</Variable>
+        <Variable Name="RowsDeleted" DataType="Int64" Namespace="User">0</Variable>
+        <Variable Name="SolutionName" DataType="String" Namespace="User" EvaluateAsExpression="true">@[$Project::SolutionName]</Variable>
+		
+		<!--<Variable Name="ServerExecutionID" DataType="Int64" Namespace="System" ReadOnly="true" EvaluateAsExpression="true" >0</Variable> -->
+      </Variables>
+      <Tasks>
+        <ExecuteSQL Name="SQL StartJob" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+          <DirectInput>dfm.StartJob</DirectInput>
+          <Parameters>
+            <Parameter Name="@SolutionName" DataType="String" Direction="Input" Length="128" VariableName="User.SolutionName" />
+            <Parameter Name="@package_name" DataType="String" Direction="Input" Length="260" VariableName="System.PackageName" />
+            <Parameter Name="@execution_id" DataType="Int64" Direction="Input" VariableName="System.ServerExecutionID" />
+            <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Output" VariableName="User.DW_ID_Audit" />
+            <Parameter Name="@DW_ID_Solution" DataType="Int32" Direction="Output" VariableName="User.DW_ID_Solution" />
+          </Parameters>
+        </ExecuteSQL>
+        
+            <Container Name="SEQ Dimension table XX" ConstraintMode="Linear">
+              <Expressions>
+                <Expression PropertyName="Name">"SEQ Dimension table " + @[User::DimensionName]</Expression>
+              </Expressions>
+              
+              <Tasks>
+                <ExecuteSQL Name="SQL StartJob" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+                      <DirectInput>dfm.StartFact</DirectInput>
+                      <Parameters>
+                        <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit" />
+                        <Parameter Name="@DimensionName" DataType="String" Direction="Input" Length="128" VariableName="User.DimensionName" />
+                        <Parameter Name="@DW_ID_AuditDimension" DataType="Int32" Direction="Output" VariableName="User.DW_ID_AuditDimension" />
+                        <Parameter Name="@DW_ID_DimensionTable" DataType="Int64" Direction="Output" VariableName="User.DW_ID_DimensionTable" />
+                        <Parameter Name="@DW_ID_Audit_EndValue_Last" DataType="Int32" Direction="Output" VariableName="User.DW_ID_Audit_EndValue_Last" />
+                      </Parameters>
+                </ExecuteSQL>
+    
+                <ExecuteSQL Name="SQL Truncate staging table" ConnectionName="Destination OLEDB">
+                  <DirectInput>-- Truncate stg table</DirectInput>
+                  <Expressions>
+                    <Expression PropertyName="SqlStatementSource">"TRUNCATE TABLE stg.Dim" + @[User::DimensionName]</Expression>
+                  </Expressions>
+                </ExecuteSQL>
+                
+                <ExecuteSQL Name="SQL Populate staging table" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+                      <DirectInput>select 1</DirectInput>
+                    <Expressions>
+                        <Expression PropertyName="SqlStatementSource">"stg.SelectDim" + @[User::DimensionName]</Expression>
+                    </Expressions>
+                    <Parameters>
+                        <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit" />
+                        <Parameter Name="@DW_ID_Audit_EndValue_Last" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit_EndValue_Last" />
+                    </Parameters>
+                </ExecuteSQL>
+                
+                
+                <ExecuteSQL Name="SQL Update Dimension table" ConnectionName="Destination ADO.NET" IsStoredProcedure="true" Disabled="false">
+                  <DirectInput>
+                    SELECT 1;
+                  </DirectInput>
+                  <Expressions>
+                    <Expression PropertyName="SqlStatementSource">"dim.Update" + SUBSTRING( @[User::FactTableName], 1, FINDSTRING( @[User::DimensionName] ,"_", 1 ) -1 )</Expression>
+                  </Expressions>
+                  <Parameters>
+                    <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit"></Parameter>
+                    <Parameter Name="@DW_ID_Audit_EndValue_Last" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit_EndValue_Last"></Parameter>
+                    <Parameter Name="@RowsInserted" DataType="Int64" Direction="Output" VariableName="User.RowsInserted"></Parameter>
+                    <Parameter Name="@RowsUpdated" DataType="Int64" Direction="Output" VariableName="User.RowsUpdated"></Parameter>
+                    <Parameter Name="@RowsDeleted" DataType="Int64" Direction="Output" VariableName="User.RowsDeleted"></Parameter>
+                  </Parameters>
+                </ExecuteSQL>
+                
+                <ExecuteSQL Name="SQL EndDimension" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+                  <DirectInput>dfm.EndDimension</DirectInput>
+                  <Parameters>
+                    <Parameter Name="@DW_ID_AuditFact" DataType="Int32" Direction="Input" VariableName="User.DW_ID_AuditFact" />
+                    <Parameter Name="@RowsInserted" DataType="Int64" Direction="Input" VariableName="User.RowsInserted" />
+                    <Parameter Name="@RowsUpdated" DataType="Int64" Direction="Input" VariableName="User.RowsUpdated" />
+                    <Parameter Name="@RowsDeleted" DataType="Int64" Direction="Input" VariableName="User.RowsDeleted" />
+                    <Parameter Name="@DW_ID_Audit_StartValue" DataType="Int64" Direction="Input"  VariableName="User.DW_ID_Audit_StartValue" />
+                    <Parameter Name="@DW_ID_Audit_StartValue" DataType="Int64" Direction="Input"  VariableName="User.DW_ID_Audit_StartValue" />
+                  </Parameters>
+                </ExecuteSQL>
+              </Tasks>
+            </Container>
+       
+        <ExecuteSQL Name="SQL EndJob" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+          <DirectInput>dfm.EndJob</DirectInput>
+          <Parameters>
+            <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit" />
+          </Parameters>9
+        </ExecuteSQL>
+      </Tasks>
+    </Package>
+<#}
+else if (tab[0].ToString()=="fct")
+
+{
+#>   
+   <Package Name="<#=SchemaName#>_<#=tableName#>" ConstraintMode="Linear" CreatorComputerName="Anonymous" CreatorName="MATBOY / ENVERSION">
+
+
+	<Variables>
+        <Variable Name="DW_ID_Audit" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Audit_EndValue" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Audit_EndValue_Last" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Audit_StartValue" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_AuditFact" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_FactTable" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="DW_ID_Solution" DataType="Int32" Namespace="User">0</Variable>
+        <Variable Name="FactTableName" DataType="String" Namespace="User" EvaluateAsExpression="false"><#=tableName#>_<#=Source#></Variable>
+        <Variable Name="RowsInserted" DataType="Int64" Namespace="User">0</Variable>
+        <Variable Name="RowsUpdated" DataType="Int64" Namespace="User">0</Variable>
+        <Variable Name="RowsDeleted" DataType="Int64" Namespace="User">0</Variable>
+        <Variable Name="SolutionName" DataType="String" Namespace="User" EvaluateAsExpression="true">@[$Project::SolutionName]</Variable>
+		
+		<!--<Variable Name="ServerExecutionID" DataType="Int64" Namespace="System" ReadOnly="true" EvaluateAsExpression="true" >0</Variable> -->
+      </Variables>
+      <Tasks>
+        <ExecuteSQL Name="SQL StartJob" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+          <DirectInput>dfm.StartJob</DirectInput>
+          <Parameters>
+            <Parameter Name="@SolutionName" DataType="String" Direction="Input" Length="128" VariableName="User.SolutionName" />
+            <Parameter Name="@package_name" DataType="String" Direction="Input" Length="260" VariableName="System.PackageName" />
+            <Parameter Name="@execution_id" DataType="Int64" Direction="Input" VariableName="System.ServerExecutionID" />
+            <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Output" VariableName="User.DW_ID_Audit" />
+            <Parameter Name="@DW_ID_Solution" DataType="Int32" Direction="Output" VariableName="User.DW_ID_Solution" />
+          </Parameters>
+        </ExecuteSQL>
+        
+            <Container Name="SEQ Fact table XX" ConstraintMode="Linear">
+              <Expressions>
+                <Expression PropertyName="Name">"SEQ Fact table " + @[User::FactTableName]</Expression>
+              </Expressions>
+              
+              <Tasks>
+                <ExecuteSQL Name="SQL StartJob" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+                      <DirectInput>dfm.StartFact</DirectInput>
+                      <Parameters>
+                        <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit" />
+                        <Parameter Name="@FactTableName" DataType="String" Direction="Input" Length="128" VariableName="User.FactTableName" />
+                        <Parameter Name="@DW_ID_AuditFact" DataType="Int32" Direction="Output" VariableName="User.DW_ID_AuditFact" />
+                        <Parameter Name="@DW_ID_FactTable" DataType="Int64" Direction="Output" VariableName="User.DW_ID_FactTable" />
+                        <Parameter Name="@DW_ID_Audit_EndValue_Last" DataType="Int32" Direction="Output" VariableName="User.DW_ID_Audit_EndValue_Last" />
+                      </Parameters>
+                </ExecuteSQL>
+    
+                <ExecuteSQL Name="SQL Truncate staging table" ConnectionName="Destination OLEDB">
+                  <DirectInput>-- Truncate stg table</DirectInput>
+                  <Expressions>
+                    <Expression PropertyName="SqlStatementSource">"TRUNCATE TABLE stg.Fct" + @[User::FactTableName]</Expression>
+                  </Expressions>
+                </ExecuteSQL>
+                
+                <ExecuteSQL Name="SQL Populate staging table" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+                      <DirectInput>select 1</DirectInput>
+                    <Expressions>
+                        <Expression PropertyName="SqlStatementSource">"stg.SelectFct" + @[User::FactTableName]</Expression>
+                    </Expressions>
+                    <Parameters>
+                        <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit" />
+                        <Parameter Name="@DW_ID_Audit_EndValue_Last" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit_EndValue_Last" />
+                    </Parameters>
+                </ExecuteSQL>
+                
+                
+                <ExecuteSQL Name="SQL Update fact table" ConnectionName="Destination ADO.NET" IsStoredProcedure="true" Disabled="false">
+                  <DirectInput>
+                    SELECT 1;
+                  </DirectInput>
+                  <Expressions>
+                    <Expression PropertyName="SqlStatementSource">"fct.Update" + SUBSTRING( @[User::FactTableName], 1, FINDSTRING( @[User::FactTableName] ,"_", 1 ) -1 )</Expression>
+                  </Expressions>
+                  <Parameters>
+                    <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit"></Parameter>
+                    <Parameter Name="@DW_ID_Audit_EndValue_Last" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit_EndValue_Last"></Parameter>
+                    <Parameter Name="@RowsInserted" DataType="Int64" Direction="Output" VariableName="User.RowsInserted"></Parameter>
+                    <Parameter Name="@RowsUpdated" DataType="Int64" Direction="Output" VariableName="User.RowsUpdated"></Parameter>
+                    <Parameter Name="@RowsDeleted" DataType="Int64" Direction="Output" VariableName="User.RowsDeleted"></Parameter>
+                  </Parameters>
+                </ExecuteSQL>
+                
+                <ExecuteSQL Name="SQL EndFact" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+                  <DirectInput>dfm.EndFact</DirectInput>
+                  <Parameters>
+                    <Parameter Name="@DW_ID_AuditFact" DataType="Int32" Direction="Input" VariableName="User.DW_ID_AuditFact" />
+                    <Parameter Name="@RowsInserted" DataType="Int64" Direction="Input" VariableName="User.RowsInserted" />
+                    <Parameter Name="@RowsUpdated" DataType="Int64" Direction="Input" VariableName="User.RowsUpdated" />
+                    <Parameter Name="@RowsDeleted" DataType="Int64" Direction="Input" VariableName="User.RowsDeleted" />
+                    <Parameter Name="@DW_ID_Audit_StartValue" DataType="Int64" Direction="Input"  VariableName="User.DW_ID_Audit_StartValue" />
+                    <Parameter Name="@DW_ID_Audit_StartValue" DataType="Int64" Direction="Input"  VariableName="User.DW_ID_Audit_StartValue" />
+                  </Parameters>
+                </ExecuteSQL>
+              </Tasks>
+            </Container>
+       
+        <ExecuteSQL Name="SQL EndJob" IsStoredProcedure="true" ConnectionName="Destination ADO.NET">
+          <DirectInput>dfm.EndJob</DirectInput>
+          <Parameters>
+            <Parameter Name="@DW_ID_Audit" DataType="Int32" Direction="Input" VariableName="User.DW_ID_Audit" />
+          </Parameters>9
+        </ExecuteSQL>
+      </Tasks>
+    </Package> 
+       
+<#
+}
+
+
+    
+
+
+#>
+    
+<#
+	};
+#>
+
+	<Package Name="Master_fct_<#=stgDatabaseName#>" CreatorComputerName="Anonymous" CreatorName="Mathias Boysen / ENVERSION" ConstraintMode="Parallel" MaxConcurrentExecutables="5">
+		<Variables>
+			<Variable Name="SolutionName" DataType="String" Namespace="User" EvaluateAsExpression="true">@[$Project::SolutionName]</Variable>
+		</Variables>
+		<Tasks>
+<#
+		int tab_i = 0;
+		int tab_rowCnt = tables.Rows.Count;
+		foreach (DataRow tab in tables.Rows )
+		{
+		tableName = tab[1].ToString();
+		if(tab[0].ToString()=="fct")
+	        {
+#>
+			<ExecutePackage Name="EPT Fact_<#=tableName#>">
+						<ExternalProjectPackage Package="Fact_<#=tableName#>.dtsx"></ExternalProjectPackage>
+					</ExecutePackage>
+<#
+		
+	        }
+		};
+#>
+		</Tasks>		
+	</Package>
+  </Packages>
+</Biml>
+<#@ template language="C#" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.OleDb" #>

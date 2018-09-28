@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="Destination ADO.NET"
+  DTS:DTSID="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+  DTS:CreationName="ADO.NET:System.Data.SqlClient.SqlConnection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <DTS:PropertyExpression
+    DTS:Name="ConnectionString">"Data Source=" + @[$Project::DSAServerName] + ";Initial Catalog=" + @[$Project::SolutionName]  + ";Integrated security=SSPI;"</DTS:PropertyExpression>
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectionString="Data Source=BI-DSA-UDV\DSA;Initial Catalog=DSO_Bosted;Integrated Security=True;Application Name=&quot;SSIS-{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}Destination ADO.NET&quot;;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

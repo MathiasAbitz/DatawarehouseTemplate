@@ -1,0 +1,679 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="3/5/2014 2:50:48 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="Anonymous"
+  DTS:CreatorName="Anonymous"
+  DTS:DTSID="{7FF96E31-7440-40ED-A046-02261B711D22}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3002.106"
+  DTS:LocaleID="1030"
+  DTS:ObjectName="Fact_BridgeXXX"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="19"
+  DTS:VersionGUID="{8C0FFA48-06D0-4618-85D7-9C440AD83042}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A35A1F23-D78C-421B-8DF4-B1562BA38C96}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{43140798-889B-4396-B169-97E6E5CFE2A6}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_AuditFact">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EE003777-6156-45C3-825A-D4E6764535C1}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit_EndValue">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{57715E99-D3B6-4BCE-A83E-0A285C3BBAA2}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit_EndValue_Last">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D1166620-FF7D-4B29-97F8-B178EE6A6EE1}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit_StartValue">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D57DD984-1C07-419B-AF02-E430C0614E17}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_FactTable">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E97973F1-8E64-4F39-8DE3-32359AAEB67B}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Solution">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7F33AFE6-A330-4B1F-9B68-9C0D29B5557B}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FactTableName">
+      <DTS:VariableValue
+        DTS:DataType="8">BridgeXXX_Kilde</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4D435335-F3BE-4F29-A0D5-F066731C9690}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="RowsDeleted">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BE125828-EBFD-4A02-9902-1F1EAF9AE535}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="RowsInserted">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CD78B166-5A63-46B3-AEAB-DEB31FA22235}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="RowsUpdated">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{760B3EE5-9568-4124-8BF7-077B07D28C0B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::SolutionName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SolutionName">
+      <DTS:VariableValue
+        DTS:DataType="8">DSO_SharedDimensions</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SEQ Fact BridgeXXX_Kilde"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{6AB22D4C-52DE-4781-AB37-73AA2612E598}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SEQ Fact BridgeXXX_Kilde">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Name">"SEQ Fact " + @[User::FactTableName]</DTS:PropertyExpression>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde\SQL EndFact"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{985E2B45-7164-48D1-9635-066E8C575F3B}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL EndFact"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="dfm.EndFact" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_AuditFact"
+                SQLTask:DtsVariableName="User::DW_ID_AuditFact"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@RowsInserted"
+                SQLTask:DtsVariableName="User::RowsInserted"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@RowsUpdated"
+                SQLTask:DtsVariableName="User::RowsUpdated"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@RowsDeleted"
+                SQLTask:DtsVariableName="User::RowsDeleted"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_StartValue"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_StartValue"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde\SQL Populate staging table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{AEEFFECD-EEC8-47DC-A9A7-F9EC976F82A8}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL Populate staging table"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"stg.SelectFct" + @[User::FactTableName]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="stg.SelectFctBridgeXXX_Kilde" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde\SQL StartFact"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{921A3BD3-F7AF-45C8-BAED-1285902CBACF}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL StartFact"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="dfm.StartFact" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@FactTableName"
+                SQLTask:DtsVariableName="User::FactTableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="16"
+                SQLTask:ParameterSize="128" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_AuditFact"
+                SQLTask:DtsVariableName="User::DW_ID_AuditFact"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_FactTable"
+                SQLTask:DtsVariableName="User::DW_ID_FactTable"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde\SQL Truncate staging table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{1D7DA27C-263E-42FF-9EA3-CA28A77D77D8}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL Truncate staging table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"TRUNCATE TABLE stg.Fct" + @[User::FactTableName]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{9A08B01F-7A1B-4BAC-892B-ADF0939DFA65}"
+              SQLTask:SqlStatementSource="TRUNCATE TABLE stg.FctBridgeXXX_Kilde" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde\SQL Update fact table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{DA9CDE3A-8A5F-4AAE-8484-5AAA9655571C}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL Update fact table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"fct.Update" + SUBSTRING( @[User::FactTableName], 1, FINDSTRING( @[User::FactTableName] ,"_", 1 ) -1 )</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="fct.UpdateBridgeXXX" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@RowsInserted"
+                SQLTask:DtsVariableName="User::RowsInserted"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@RowsUpdated"
+                SQLTask:DtsVariableName="User::RowsUpdated"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@RowsDeleted"
+                SQLTask:DtsVariableName="User::RowsDeleted"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{7316CD92-E326-42D6-B20D-E40A57512CDC}"
+          DTS:From="Package\SEQ Fact BridgeXXX_Kilde\SQL Truncate staging table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\SEQ Fact BridgeXXX_Kilde\SQL Populate staging table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{2DDAFFEF-808E-4454-B26A-C40536E3CCB2}"
+          DTS:From="Package\SEQ Fact BridgeXXX_Kilde\SQL Populate staging table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\SEQ Fact BridgeXXX_Kilde\SQL Update fact table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint_SQL StartFact_To_SQL Truncate staging table]"
+          DTS:CreationName=""
+          DTS:DTSID="{ADFA4651-91CB-444F-B5CD-137F836A709E}"
+          DTS:From="Package\SEQ Fact BridgeXXX_Kilde\SQL StartFact"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_SQL StartFact_To_SQL Truncate staging table"
+          DTS:To="Package\SEQ Fact BridgeXXX_Kilde\SQL Truncate staging table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint_SQL Update fact table_To_SQL EndFact]"
+          DTS:CreationName=""
+          DTS:DTSID="{49464E83-D4FD-40F4-B02F-7AF9217ADD0A}"
+          DTS:From="Package\SEQ Fact BridgeXXX_Kilde\SQL Update fact table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_SQL Update fact table_To_SQL EndFact"
+          DTS:To="Package\SEQ Fact BridgeXXX_Kilde\SQL EndFact" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL EndJob"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{B74978D0-6798-4867-8106-0B2C169D1035}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL EndJob"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+          SQLTask:IsStoredProc="True"
+          SQLTask:SqlStatementSource="dfm.EndJob" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@DW_ID_Audit"
+            SQLTask:DtsVariableName="User::DW_ID_Audit"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="11"
+            SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL StartJob"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5CFBC763-8DF5-4073-B3A3-F59233BA56CD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL StartJob"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+          SQLTask:IsStoredProc="True"
+          SQLTask:SqlStatementSource="dfm.StartJob" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@SolutionName"
+            SQLTask:DtsVariableName="User::SolutionName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="16"
+            SQLTask:ParameterSize="128" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@package_name"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="16"
+            SQLTask:ParameterSize="260" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@execution_id"
+            SQLTask:DtsVariableName="System::ServerExecutionID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="12"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@DW_ID_Audit"
+            SQLTask:DtsVariableName="User::DW_ID_Audit"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="11"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@DW_ID_Solution"
+            SQLTask:DtsVariableName="User::DW_ID_Solution"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="11"
+            SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_SEQ Fact_To_SQL EndJob]"
+      DTS:CreationName=""
+      DTS:DTSID="{D2352B45-F0A4-46DA-BFC2-F2FB3F26A5B9}"
+      DTS:From="Package\SEQ Fact BridgeXXX_Kilde"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_SEQ Fact_To_SQL EndJob"
+      DTS:To="Package\SQL EndJob" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_SQL StartJob_To_SEQ Fact]"
+      DTS:CreationName=""
+      DTS:DTSID="{22F2E38E-5E59-455C-B143-A7F47EE39A16}"
+      DTS:From="Package\SQL StartJob"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_SQL StartJob_To_SEQ Fact"
+      DTS:To="Package\SEQ Fact BridgeXXX_Kilde" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="139,42"
+          Id="Package\SEQ Fact BridgeXXX_Kilde\SQL EndFact"
+          TopLeft="39.5,413.5" />
+        <NodeLayout
+          Size="206,42"
+          Id="Package\SEQ Fact BridgeXXX_Kilde\SQL Populate staging table"
+          TopLeft="9,195" />
+        <NodeLayout
+          Size="143,42"
+          Id="Package\SEQ Fact BridgeXXX_Kilde\SQL StartFact"
+          TopLeft="37.5,5.5" />
+        <NodeLayout
+          Size="207,42"
+          Id="Package\SEQ Fact BridgeXXX_Kilde\SQL Truncate staging table"
+          TopLeft="5.50000000000001,107.5" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\SEQ Fact BridgeXXX_Kilde\SQL Update fact table"
+          TopLeft="18,311.5" />
+        <EdgeLayout
+          Id="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint]"
+          TopLeft="110.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.5"
+              Start="0,0"
+              End="0,38">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint 1]"
+          TopLeft="110.5,237">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,74.5"
+              Start="0,0"
+              End="0,67">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,67" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint_SQL StartFact_To_SQL Truncate staging table]"
+          TopLeft="109,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Fact BridgeXXX_Kilde.PrecedenceConstraints[Constraint_SQL Update fact table_To_SQL EndFact]"
+          TopLeft="109,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="252,511"
+          Size="252,554"
+          Id="Package\SEQ Fact BridgeXXX_Kilde"
+          TopLeft="5.50000000000006,107.5" />
+        <NodeLayout
+          Size="135,42"
+          Id="Package\SQL EndJob"
+          TopLeft="47.0000000000001,721.5" />
+        <NodeLayout
+          Size="140,42"
+          Id="Package\SQL StartJob"
+          TopLeft="44.5,5.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint_SEQ Fact_To_SQL EndJob]"
+          TopLeft="131.5,661.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-17,60"
+              Start="0,0"
+              End="-17,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26"
+                    Point2="0,30"
+                    Point3="-4,30" />
+                  <mssgle:LineSegment
+                    End="-13,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-13,30"
+                    Point2="-17,30"
+                    Point3="-17,34" />
+                  <mssgle:LineSegment
+                    End="-17,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint_SQL StartJob_To_SEQ Fact]"
+          TopLeft="114.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="17.0000000000001,60"
+              Start="0,0"
+              End="17.0000000000001,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26"
+                    Point2="0,30"
+                    Point3="4,30" />
+                  <mssgle:LineSegment
+                    End="13.0000000000001,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="13.0000000000001,30"
+                    Point2="17.0000000000001,30"
+                    Point3="17.0000000000001,34" />
+                  <mssgle:LineSegment
+                    End="17.0000000000001,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

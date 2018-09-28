@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "SSIS_DSO_Template", "SSIS_DSO_Template\SSIS_DSO_Template.dtproj", "{51389D47-085D-410C-BAB6-9C82ACCF3FA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51389D47-085D-410C-BAB6-9C82ACCF3FA4}.Development|Default.ActiveCfg = Development
+		{51389D47-085D-410C-BAB6-9C82ACCF3FA4}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D6E4F9E6-2FCE-46E9-B541-ABFD999D398F}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,721 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="3/5/2014 2:50:34 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="Anonymous"
+  DTS:CreatorName="Anonymous"
+  DTS:DTSID="{5A6325AB-8260-4713-A770-94A594C76215}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3002.106"
+  DTS:LocaleID="1030"
+  DTS:ObjectName="Dimension_XXX"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="13"
+  DTS:VersionGUID="{0558A374-9489-494C-B563-4BF974A4DFE8}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{75C9C19E-33F6-4A5A-85E4-F9E196353AD9}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DimensionName">
+      <DTS:VariableValue
+        DTS:DataType="8">xxx_kilde</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4CCA1E09-F3B7-40FF-BF34-A41DBCE19A1C}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{530BE188-C342-4B3F-A4C1-4DD40EF84165}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_AuditDimension">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1C49545D-D245-42C1-8CC2-67D4BAD41892}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit_EndValue">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{284F7917-4E9B-473F-8DBD-DE8A3D687E68}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit_EndValue_Last">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{246CAA71-9FED-4991-912A-DFDCA868091E}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Audit_StartValue">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0A02F9CB-808F-4F5F-B447-4D011837F5D6}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_DimensionTable">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{838E5BE9-8FA8-4775-A950-A245C2695325}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DW_ID_Solution">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{589C9F17-3594-41C9-9698-DE2BEA39CFFA}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="NumberOfNewEntities">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B57FA881-1967-46C8-B3DE-CFAC440116CB}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="NumberOfT1Changes">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B2D586EE-8C57-42F9-B39E-0068FC8B1124}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="NumberOfT2Changes">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D78C19F2-A25E-4B47-B2AB-20DFE5108322}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::SolutionName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SolutionName">
+      <DTS:VariableValue
+        DTS:DataType="8">DSO_SharedDimensions</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SEQ Dimension xxx_kilde"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{7E1E0CE2-B2EC-44B0-8E3A-8A432BD8ED3B}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SEQ Dimension xxx_kilde">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Name">"SEQ Dimension " + @[User::DimensionName]</DTS:PropertyExpression>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Dimension xxx_kilde\SQL  Insert into staging table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{20f74c60-7ae1-485e-a0d6-010890831be5}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL  Insert into staging table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"stg.SelectDim"+@[User::DimensionName]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="stg.SelectDimxxx_kilde" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Dimension xxx_kilde\SQL EndDimension"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{35C34F77-A789-4F85-9D36-78955CDC7741}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL EndDimension"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="dfm.EndDimension" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_AuditDimension"
+                SQLTask:DtsVariableName="User::DW_ID_AuditDimension"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@NumberOfNewEntities"
+                SQLTask:DtsVariableName="User::NumberOfNewEntities"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@NumberOfT1Changes"
+                SQLTask:DtsVariableName="User::NumberOfT1Changes"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@NumberOfT2Changes"
+                SQLTask:DtsVariableName="User::NumberOfT2Changes"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_StartValue"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_StartValue"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Dimension xxx_kilde\SQL StartDimension"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{1282B892-E334-4CC7-B9E6-358258E3B57E}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL StartDimension"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="dfm.StartDimension" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DimensionName"
+                SQLTask:DtsVariableName="User::DimensionName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="16"
+                SQLTask:ParameterSize="128" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_AuditDimension"
+                SQLTask:DtsVariableName="User::DW_ID_AuditDimension"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_DimensionTable"
+                SQLTask:DtsVariableName="User::DW_ID_DimensionTable"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Dimension xxx_kilde\SQL Truncate staging table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{5D15F64D-4E67-4AA5-94F6-768E3E474A06}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL Truncate staging table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"TRUNCATE TABLE stg.Dim" + @[User::DimensionName]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{9A08B01F-7A1B-4BAC-892B-ADF0939DFA65}"
+              SQLTask:SqlStatementSource="TRUNCATE TABLE stg.Dimxxx_kilde" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Dimension xxx_kilde\SQL Update dimension table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{5F66A509-385F-4200-A2E1-D00879EC9E61}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL Update dimension table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"dim.Update" + SUBSTRING( @[User::DimensionName], 1, FINDSTRING( @[User::DimensionName],"_", 1 ) -1 )</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="dim.Updatexxx" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@NumberOfT1Changes"
+                SQLTask:DtsVariableName="User::NumberOfT1Changes"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@NumberOfT2Changes"
+                SQLTask:DtsVariableName="User::NumberOfT2Changes"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@NumberOfNewEntities"
+                SQLTask:DtsVariableName="User::NumberOfNewEntities"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="12"
+                SQLTask:ParameterSize="0" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Dimension xxx_kilde\SQL Update map table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{9947BC72-C186-4A9C-8A86-C64B18A6DA7B}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL Update map table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="SqlStatementSource">"map.Update"+ @[User::DimensionName]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+              SQLTask:IsStoredProc="True"
+              SQLTask:SqlStatementSource="map.Updatexxx_kilde" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit"
+                SQLTask:DtsVariableName="User::DW_ID_Audit"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@DW_ID_Audit_EndValue_Last"
+                SQLTask:DtsVariableName="User::DW_ID_Audit_EndValue_Last"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="11"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{8094708B-1077-4043-9C71-F5A77FFE5674}"
+          DTS:From="Package\SEQ Dimension xxx_kilde\SQL Truncate staging table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\SEQ Dimension xxx_kilde\SQL  Insert into staging table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{8FD5AC50-1702-411A-85E8-4BEFCD74E70F}"
+          DTS:From="Package\SEQ Dimension xxx_kilde\SQL  Insert into staging table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\SEQ Dimension xxx_kilde\SQL Update map table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{920C0280-C6A1-45D4-A695-4FF27FED34F8}"
+          DTS:From="Package\SEQ Dimension xxx_kilde\SQL Update map table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\SEQ Dimension xxx_kilde\SQL Update dimension table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint_SQL StartDimension_To_SQL Truncate staging table]"
+          DTS:CreationName=""
+          DTS:DTSID="{76DC09DC-CCE4-4773-B5DA-8F2C1966838B}"
+          DTS:From="Package\SEQ Dimension xxx_kilde\SQL StartDimension"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_SQL StartDimension_To_SQL Truncate staging table"
+          DTS:To="Package\SEQ Dimension xxx_kilde\SQL Truncate staging table" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint_SQL Update dimension table_To_SQL EndDimension]"
+          DTS:CreationName=""
+          DTS:DTSID="{5794E0AA-097C-47A9-8B14-4701736DF2A6}"
+          DTS:From="Package\SEQ Dimension xxx_kilde\SQL Update dimension table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_SQL Update dimension table_To_SQL EndDimension"
+          DTS:To="Package\SEQ Dimension xxx_kilde\SQL EndDimension" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL EndJob"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{881355FD-A64B-48C6-BA3F-90D7A3DAFC74}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL EndJob"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+          SQLTask:IsStoredProc="True"
+          SQLTask:SqlStatementSource="dfm.EndJob" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@DW_ID_Audit"
+            SQLTask:DtsVariableName="User::DW_ID_Audit"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="11"
+            SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL StartJob"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{BA86E4A5-5529-4045-B514-58ABDE2C0834}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL StartJob"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{4BAB5562-31E9-4F0E-95A7-8BD2FAB47CE6}"
+          SQLTask:IsStoredProc="True"
+          SQLTask:SqlStatementSource="dfm.StartJob" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@SolutionName"
+            SQLTask:DtsVariableName="User::SolutionName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="16"
+            SQLTask:ParameterSize="128" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@package_name"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="16"
+            SQLTask:ParameterSize="260" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@execution_id"
+            SQLTask:DtsVariableName="System::ServerExecutionID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="12"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@DW_ID_Audit"
+            SQLTask:DtsVariableName="User::DW_ID_Audit"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="11"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@DW_ID_Solution"
+            SQLTask:DtsVariableName="User::DW_ID_Solution"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="11"
+            SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_SEQ Dimension_To_SQL EndJob]"
+      DTS:CreationName=""
+      DTS:DTSID="{31680224-1E8E-40B3-B2FF-352541F729D6}"
+      DTS:From="Package\SEQ Dimension xxx_kilde"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_SEQ Dimension_To_SQL EndJob"
+      DTS:To="Package\SQL EndJob" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_SQL StartJob_To_SEQ Dimension]"
+      DTS:CreationName=""
+      DTS:DTSID="{95AE7F42-3F31-46EB-9913-A718D003E13C}"
+      DTS:From="Package\SQL StartJob"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_SQL StartJob_To_SEQ Dimension"
+      DTS:To="Package\SEQ Dimension xxx_kilde" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="217,42"
+          Id="Package\SEQ Dimension xxx_kilde\SQL  Insert into staging table"
+          TopLeft="6.50000000000006,195.5" />
+        <NodeLayout
+          Size="170,42"
+          Id="Package\SEQ Dimension xxx_kilde\SQL EndDimension"
+          TopLeft="27.5000000000001,515.5" />
+        <NodeLayout
+          Size="175,42"
+          Id="Package\SEQ Dimension xxx_kilde\SQL StartDimension"
+          TopLeft="25,5.5" />
+        <NodeLayout
+          Size="209,42"
+          Id="Package\SEQ Dimension xxx_kilde\SQL Truncate staging table"
+          TopLeft="8.00000000000001,107.5" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\SEQ Dimension xxx_kilde\SQL Update dimension table"
+          TopLeft="5.50000000000006,413.5" />
+        <NodeLayout
+          Size="185,42"
+          Id="Package\SEQ Dimension xxx_kilde\SQL Update map table"
+          TopLeft="16,318.5" />
+        <EdgeLayout
+          Id="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint]"
+          TopLeft="113.75,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint 1]"
+          TopLeft="111.75,237.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,81"
+              Start="0,0"
+              End="0,73.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,73.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint 2]"
+          TopLeft="110,360.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53"
+              Start="0,0"
+              End="0,45.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint_SQL StartDimension_To_SQL Truncate staging table]"
+          TopLeft="112.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Dimension xxx_kilde.PrecedenceConstraints[Constraint_SQL Update dimension table_To_SQL EndDimension]"
+          TopLeft="112,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="225,715"
+          Size="225,758"
+          Id="Package\SEQ Dimension xxx_kilde"
+          TopLeft="5.5000000000001,107.5" />
+        <NodeLayout
+          Size="137,42"
+          Id="Package\SQL EndJob"
+          TopLeft="49.5000000000001,823.5" />
+        <NodeLayout
+          Size="142,42"
+          Id="Package\SQL StartJob"
+          TopLeft="47,5.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint_SEQ Dimension_To_SQL EndJob]"
+          TopLeft="118,865.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,-42"
+              Start="0,0"
+              End="0,-34.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-34.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint_SQL StartJob_To_SEQ Dimension]"
+          TopLeft="118,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

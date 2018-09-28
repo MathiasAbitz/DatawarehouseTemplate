@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="Destination OLEDB"
+  DTS:DTSID="{9A08B01F-7A1B-4BAC-892B-ADF0939DFA65}"
+  DTS:CreationName="OLEDB">
+  <DTS:PropertyExpression
+    DTS:Name="ConnectionString">"Provider=SQLNCLI11;Data Source=" + @[$Project::DSAServerName] + ";Initial Catalog=" + @[$Project::SolutionName]  + ";Integrated security=SSPI;"</DTS:PropertyExpression>
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectionString="Data Source=BI-DSA-UDV\DSA;Initial Catalog=DSO_Bosted;Provider=SQLNCLI11;Integrated security=SSPI;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
