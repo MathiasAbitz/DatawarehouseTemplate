@@ -1,13 +1,5 @@
-USE [DWFramework]
-GO
-/****** Object:  StoredProcedure [dbo].[MergeTemplate]    Script Date: 14-09-2018 08:25:45 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-ALTER PROCEDURE [dbo].[MergeTemplate]
-	@schemaName NVARCHAR(MAX),
+CREATE PROCEDURE [dbo].[MergeTemplateGenerator]
+	@schemaName NVARCHAR(MAX), --Alt ext
 	@tableName NVARCHAR(MAX),
 	@DSI_Database nvarchar(max)
 
@@ -33,7 +25,8 @@ DECLARE @ColumnsTable TABLE
   [name] nvarchar(500),
   PK int
 )
-
+--Bør måske udvides så den også kan oprette arc tabeller 
+--Finder metadata til tabellen
 declare @sql nvarchar(max)
 set @sql=
 'select c.COLUMN_NAME,iif(constraint_name is not null,1,0) as pk  
@@ -50,8 +43,7 @@ exec(@sql)
 
 
 
-	
-
+	/*Bygger headeren*/
 set @sqlHeader='CREATE PROCEDURE arc.[Update'+@tableName+']
 	@DW_ID_Audit INT = 0, 
 	@RowsInserted BIGINT = 0 OUTPUT,
@@ -74,19 +66,25 @@ BEGIN
 
 		MERGE arc.'+@tableName+' AS tgt
 ';
+/*Starten på using/select i mergen*/
 set @sqlUsing = '		USING (
 				SELECT';
+/*Starten på compare*/
 set @sqCompare='			WHEN MATCHED AND
 				(';
+/*Starten på update*/
 set @sqlUpdate = '			THEN UPDATE
 				SET
 '
+/*Starten på insert*/
 set @sqlInsert = '			WHEN NOT MATCHED THEN 
 				INSERT (
 '
+/*Starten på values til insert*/
 SET @sqlInsertValues = '				VALUES (
 '
 SET @sqlSelect=''
+/*Starten på on clausen. Her bruges PK*/
 set @sqlOnclause= 
 'ON '
 
@@ -94,7 +92,7 @@ DECLARE columnNameCurser SCROLL CURSOR FOR select [name],PK from @ColumnsTable
 -- Usfing statement
 open columnNameCurser
 fetch next from columnNameCurser into @columnName,@pk;
-
+/*Looper over antal kolonner i sys tabellen*/
 while(@@fetch_status = 0)
 begin
 	select @SQLselect = @SQLselect + '
@@ -118,7 +116,9 @@ begin
 	end
    FETCH NEXT FROM columnNameCurser INTO @columnName,@pk;
 END
-
+CLOSE columnNameCurser
+DEALLOCATE columnNameCurser
+/*Sammen sætter de forskellige elementer*/
 select @sqlOnclause=substring(@sqlOnclause,1,len(@sqlOnclause)-3)
 select @SQLselect =substring(@SQLselect,1,len(@SQLselect)-1)
 select @sqCompare=substring(@sqCompare,1,len(@sqCompare)-2)
@@ -148,9 +148,8 @@ SELECT @sqlInsertValues = @sqlInsertValues + '
 					0
 				);
 '
-CLOSE columnNameCurser
-DEALLOCATE columnNameCurser
 
+/*sidste del af sql scriptet*/
 SET @sqlFooter='		SET @RowsInserted = @@ROWCOUNT;
 		SET @RowsUpdated = 0;
 
@@ -178,6 +177,7 @@ PRINT @sqlInsert
 print @sqlInsertValues
 PRINT @sqlFooter
 set @sqlCombined=@sqlHeader+@sqlUsing+@sqlUpdate+@sqlInsert+@sqlInsertValues+@sqlFooter
+/*exec sp på anden db*/
 SET @dbExec=@DSI_Database+N'.sys.sp_executesql'
 EXEC @dbExec @sqlCombined
 

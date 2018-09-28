@@ -29,15 +29,16 @@ Ved multitenancy og shareddimensions skal man selv rette viewet map.xxx til. Og 
 @multitenanttype=1 
 Når storedproceduren er kørt succesful, så put ETL-logik i SP stg.InsertdimXXX. Her finder du yderligere en cleanCode. Sættes som udgangspunkt altid = primærnøglen. Men bruges til når primærnøglen ikke er pæn, i det tilfælde er cleanCode er en pæn kode hvor vi kan mappe EK'ere på tværs af kilder.
 Ved shareddimension, hvor alle berigende kolonner ligger andet steds. F.eks. dim.Organisation. Så skrives alle kolonner stadig i InputDimColumnDTypeList. Udfyld da kun de kolonner som er nødvendige i SP stg.DimXXX_kilde
+3 situationer skriv om dem.
 */
 
 
 
 /*WHAT DOES IT DO
 Opretter sequence til dimensionen
-Opretter stg,map og dim tabeller
+Opretter og retter i stg,map og dim tabeller
 Opretter map view 
-Opretter storedprocedures til stg,map og dim
+Opretter og retter i storedprocedures til stg,map og dim, men gemme alt fra logik tags
 */
 /*Sørger for at vi kan execute AUTODimGenerator på den rigtige server*/
 DECLARE @dbExec NVARCHAR(100)
@@ -155,6 +156,12 @@ SELECT @dimValidFromColumn= SUBSTRING( value,CHARINDEX('[',value,1),1+CHARINDEX(
 FROM  String_Split(@dimColumnDTypeList,',')
 WHERE value LIKE '%/*ValidFrom*/%'
 
+Declare  @dimValidToColumn  NVARCHAR(MAX)
+SELECT @dimValidToColumn= SUBSTRING( value,CHARINDEX('[',value,1),1+CHARINDEX(']',value,1)-CHARINDEX('[',value,1))
+FROM  String_Split(@dimColumnDTypeList,',')
+WHERE value LIKE '%/*ValidTo*/%'
+
+print(@dimValidToColumn)
 /*Liste med TYPE1 kolonner med datatyper*/
 Declare  @dimColumnListT1  NVARCHAR(MAX)
 SELECT @dimColumnListT1=
@@ -502,22 +509,31 @@ SELECT
 	[mapALLE].[DW_EK_'+@dimTableName+'],
 	[CleanCode],
 	'+@kundeID+'
-
+	DW_ID_Audit_Update,
 	CAST(IIF(map'+@inputvar_kildeNavn+'.DW_EK_'+@dimTableName+' IS NULL, 0, 1) AS TINYINT) AS Medi'+@inputvar_kildeNavn+'
 FROM (
-	
-	SELECT DISTINCT 
-		DW_EK_'+@dimTableName+',
-		'+@kundeID+' 
-		[CleanCode]	
-	FROM map.'+@dimTableName+'_'+@inputvar_kildeNavn+'
-	/*
-	UNION
-	SELECT DISTINCT DW_EK_xxx,
-			<metode til at udlede shak fra andet kildesystem>  AS,
-			KodeType
-	FROM map.xxx_kilde
-	*/
+	SELECT 
+		mapUpdate.[DW_EK_'+@dimTableName+'], 
+		mapUpdate.[CleanCode], 
+		'+@kundeID+'
+		MAX(DW_ID_Audit_Update) AS DW_ID_Audit_Update
+	FROM (	
+		SELECT DISTINCT 
+			DW_EK_'+@dimTableName+',
+			'+@kundeID+' 
+			[CleanCode],
+			DW_ID_Audit_Update
+				
+		FROM map.'+@dimTableName+'_'+@inputvar_kildeNavn+'
+		/*
+		UNION
+		SELECT DISTINCT DW_EK_xxx,
+				<metode til at udlede shak fra andet kildesystem>  AS,
+				KodeType
+		FROM map.xxx_kilde
+		*/
+	) AS mapUpdate
+	group by mapUpdate.[DW_EK_'+@dimTableName+'],'+@kundeID+'[CleanCode]
 ) mapALLE
 LEFT JOIN (SELECT DISTINCT DW_EK_'+@dimTableName+' FROM map.'+@dimTableName+'_'+@inputvar_kildeNavn+') AS map'+@inputvar_kildeNavn+' 
 ON map'+@inputvar_kildeNavn+'.DW_EK_'+@dimTableName+' = mapALLE.DW_EK_'+@dimTableName+'
@@ -688,6 +704,8 @@ AS
 				WHERE target.DW_EK_'+@dimTableName+' IS NOT NULL
 		) as source
 		ON ('+@multiTdimMapBKJoin+')
+		WHEN MATCHED THEN
+		UPDATE SET target.DW_ID_Audit_Update = @DW_ID_Audit
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (DW_EK_'+@dimTableName+', '+@multiTMAPBKColumnList+',[CleanCode],[DW_ID_Audit_Insert],[DW_ID_Audit_Update])
 			VALUES (source.DW_EK_'+@dimTableName+', '+REPLACE(@multiTMAPBKColumnList,'[','source.[')+',[CleanCode],@DW_ID_Audit,@DW_ID_Audit)
@@ -785,104 +803,200 @@ END
 /*Dim*/
 DECLARE @UpdateInsetStatement NVARCHAR(max)
 
-/*Tjekker om man selv har angivet historik, så anager vi at alt andet er type1. Lav selv nuværende kolonner allerede i stg hvis dette ønskes*/
+/*Tjekker om man selv har angivet historik, så antager vi at alt andet er type1. Lav selv nuværende kolonner allerede i stg hvis dette ønskes*/
 IF @dimValidFromColumn IS NOT NULL
-(Select @UpdateInsetStatement=
-'			/* 
-			i staging tabellen er ALLE informationer om en given DW_EK.
-		   Alle ikke allerede slettede rækker i dim slettemarkeres ([DW_IsDeleted] = 1)
-			hvis DW_EK fra stg tabellen findes i dim  og 
-			en given validfrom ikke længere eksisterer for DW_EK i dim
-			(det betyder at der er ændret en ValidFrom dato i kildedata)
-		*/
+BEGIN
+	IF @dimValidToColumn IS NOT NULL
+	BEGIN
+	/*Ny version specielt til når man beregner al historik*/
+	Select @UpdateInsetStatement=
+	'			/* 
+				i staging tabellen er ALLE informationer om en given DW_EK.
+			   Alle ikke allerede slettede rækker i dim slettemarkeres ([DW_IsDeleted] = 1)
+				hvis DW_EK fra stg tabellen findes i dim  og 
+				en given validfrom ikke længere eksisterer for DW_EK i dim
+				(det betyder at der er ændret en ValidFrom dato i kildedata)
+			*/
 		
-		IF (OBJECT_ID(''tempdb..#tempValidCurrent'')<>0)
-		DROP TABLE #tempValidCurrent
-		/*Beregning af ValidFrom og DW_IsCurrent samt tjek af DW_ValidFrom*/
-		SELECT *
-		,DW_ValidFrom=IIF('+@dimValidFromColumn+'=min('+@dimValidFromColumn+') over (PARTITION BY [DW_EK_'+@dimTableName+']),CAST(''00010101'' AS DATETEIME2(3)),'+@dimValidFromColumn+')
-		,DW_ValidTo=ISNULL(LEAD('+@dimValidFromColumn+') OVER (PARTITION BY [DW_EK_'+@dimTableName+'] ORDER BY '+@dimValidFromColumn+' asc),CAST(''99990101'' AS DATETEIME2(3)))
-		,DW_IsCurrent=IIF('+@dimValidFromColumn+'=max('+@dimValidFromColumn+') over (PARTITION BY [DW_EK_'+@dimTableName+']),1,0)
-		,DW_IsDeleted =0
-		Into #tempValidCurrent
-		FROM #stgDim'+@dimTableName+'
 
-		/*Kigger efter de EKer som er i stg tabellen og deletmarkerer alle dem som ikke matcher en validFrom*/
-		UPDATE [a] WITH (TABLOCK)
-			SET	[a].[DW_IsDeleted] = 1
-				  ,[a].[DW_IsCurrent] = 0
-				  ,[a].[DW_ID_Audit_Update] = @DW_ID_Audit
-		FROM [dim].['+@dimTableName+'] [a]
-		INNER JOIN #tempValidCurrent [b]
-		ON	([a].[DW_EK_'+@dimTableName+'] = [b].[DW_EK_'+@dimTableName+'])
-		WHERE NOT EXISTS (
-			SELECT *
-			--Beregn validTo,DW_IsCUrrent,DW_IsDeleted
-			FROM #tempValidCurrent b			  
-			WHERE [a].[DW_EK_'+@dimTableName+'] = [b].[DW_EK_'+@dimTableName+']
-			AND a.[DW_ValidFrom] = [b].[DW_ValidFrom]
-		) 
-		AND [a].[DW_IsDeleted] = 0
-		/*Almindelig merge*/
-		;MERGE [dim].['+@dimTableName+'] WITH (TABLOCK) AS target
-			USING ( 
-				SELECT [sdb].*
-				FROM #ValidCurrent [sdb]
+			/*Kigger efter de EKer som er i stg tabellen og deletmarkerer alle dem som ikke matcher en validFrom*/
+			UPDATE [a] WITH (TABLOCK)
+				SET	[a].[DW_IsDeleted] = 1
+					  ,[a].[DW_IsCurrent] = 0
+					  ,[a].[DW_ID_Audit_Update] = @DW_ID_Audit
+			FROM [dim].['+@dimTableName+'] [a]
+			INNER JOIN #stgDim'+@dimTableName+' [b]
+			ON	([a].[DW_EK_'+@dimTableName+'] = [b].[DW_EK_'+@dimTableName+'])
+			WHERE NOT EXISTS (
+				SELECT *
+				--Beregn validTo,DW_IsCUrrent,DW_IsDeleted
+				FROM #stgDim'+@dimTableName+' b			  
+				WHERE [a].[DW_EK_'+@dimTableName+'] = [b].[DW_EK_'+@dimTableName+']
+				AND a.[DW_ValidFrom] = [b].[DW_ValidFrom]
+			) 
+			AND [a].[DW_IsDeleted] = 0
+			/*Almindelig merge*/
+			;MERGE [dim].['+@dimTableName+'] WITH (TABLOCK) AS target
+				USING ( 
+					SELECT [sdb].*
+					FROM #stgDim'+@dimTableName+' [sdb]
 				
-			) AS source
-		ON ([source].[DW_EK_'+@dimTableName+'] = [target].[DW_EK_'+@dimTableName+'] 
-		AND [source].[DW_ValidFrom] = [target].[DW_ValidFrom])
-		WHEN MATCHED AND
-			(
-			'+REPLACE(@dimColumnListComp, '((target',CHAR(9)+'((target')+'OR 
-			([source].[DW_IsCurrent] <> [target].[DW_IsCurrent] OR ([source].[DW_IsCurrent] IS NULL AND [target].[DW_IsCurrent] IS NOT NULL) OR ([target].[DW_IsCurrent] IS NULL AND [source].[DW_IsCurrent] IS NOT NULL)) OR
-			([source].[DW_ValidTo] <> [target].[DW_ValidTo] OR ([source].[DW_ValidTo] IS NULL AND [target].[DW_ValidTo] IS NOT NULL) OR ([target].[DW_ValidTo] IS NULL AND [source].[DW_ValidTo] IS NOT NULL)) OR
-			([source].[DW_IsDeleted] <> [target].[DW_IsDeleted] OR [target].[DW_IsDeleted] IS NULL)
-			)
-		THEN UPDATE
-			SET '+Replace(@dimColumnListeUpdate,',',CHAR(9)+CHAR(9)+',')+'	
-				,[target].[DW_IsCurrent] = ISNULL([source].[DW_IsCurrent], [target].[DW_IsCurrent])
-				,[target].[DW_ValidTo] = ISNULL([source].[DW_ValidTo],[target].[DW_ValidTo])
-				,[target].[DW_ID_Audit_Update] = @DW_ID_Audit
-				,[target].[DW_IsDeleted] = ISNULL([source].[DW_IsDeleted],[target].[DW_IsDeleted])
+				) AS source
+			ON ([source].[DW_EK_'+@dimTableName+'] = [target].[DW_EK_'+@dimTableName+'] 
+			AND [source].[DW_ValidFrom] = [target].[DW_ValidFrom])
+			WHEN MATCHED AND
+				(
+				'+REPLACE(@dimColumnListComp, '((target',CHAR(9)+'((target')+'OR 
+				([source].[DW_IsCurrent] <> [target].[DW_IsCurrent] OR ([source].[DW_IsCurrent] IS NULL AND [target].[DW_IsCurrent] IS NOT NULL) OR ([target].[DW_IsCurrent] IS NULL AND [source].[DW_IsCurrent] IS NOT NULL)) OR
+				([source].[DW_ValidTo] <> [target].[DW_ValidTo] OR ([source].[DW_ValidTo] IS NULL AND [target].[DW_ValidTo] IS NOT NULL) OR ([target].[DW_ValidTo] IS NULL AND [source].[DW_ValidTo] IS NOT NULL)) OR
+				([source].[DW_IsDeleted] <> [target].[DW_IsDeleted] OR [target].[DW_IsDeleted] IS NULL)
+				)
+			THEN UPDATE
+				SET '+Replace(@dimColumnListeUpdate,',',CHAR(9)+CHAR(9)+',')+'	
+					,[target].[DW_IsCurrent] = ISNULL([source].[DW_IsCurrent], [target].[DW_IsCurrent])
+					,[target].[DW_ValidTo] = ISNULL([source].[DW_ValidTo],[target].[DW_ValidTo])
+					,[target].[DW_ID_Audit_Update] = @DW_ID_Audit
+					,[target].[DW_IsDeleted] = ISNULL([source].[DW_IsDeleted],[target].[DW_IsDeleted])
 
             
-		WHEN NOT MATCHED BY TARGET THEN 
-		INSERT (
-			 [DW_EK_'+@dimTableName+']
-			,[CleanCode]
-			,'+Replace(@dimColumnList,',',CHAR(9)+CHAR(9)+',')+'
+			WHEN NOT MATCHED BY TARGET THEN 
+			INSERT (
+				 [DW_EK_'+@dimTableName+']
+				,[CleanCode]
+				,'+Replace(@dimColumnList,',',CHAR(9)+CHAR(9)+',')+'
 			
-			,[DW_ValidFrom]
-			,[DW_ValidTo]
-			,[DW_IsCurrent]
-			,[DW_ID_Audit_Insert]
-			,[DW_ID_Audit_Update]
-			,[DW_IsDeleted]
+				,[DW_ValidFrom]
+				,[DW_ValidTo]
+				,[DW_IsCurrent]
+				,[DW_ID_Audit_Insert]
+				,[DW_ID_Audit_Update]
+				,[DW_IsDeleted]
 
-		)
-		VALUES  (
-			 [source].[DW_EK_'+@dimTableName+']
-			 ,[source].[CleanCode]
-			,'+Replace(REPLACE(@dimColumnList,'[','source.['),',',CHAR(9)+CHAR(9)+',')+'
+			)
+			VALUES  (
+				 [source].[DW_EK_'+@dimTableName+']
+				 ,[source].[CleanCode]
+				,'+Replace(REPLACE(@dimColumnList,'[','source.['),',',CHAR(9)+CHAR(9)+',')+'
 			
-			,[source].[DW_ValidFrom]
-			,[source].[DW_ValidTo]
-			,[source].[DW_IsCurrent]
-			,@DW_ID_Audit
-			,@DW_ID_Audit
-			,[source].[DW_IsDeleted]
+				,[source].[DW_ValidFrom]
+				,[source].[DW_ValidTo]
+				,[source].[DW_IsCurrent]
+				,@DW_ID_Audit
+				,@DW_ID_Audit
+				,[source].[DW_IsDeleted]
 
-		)
-		OUTPUT $action INTO #rowcounts;
+			)
+			OUTPUT $action INTO #rowcounts;
 
-		-- Ser en update som en ændring - rækken eksisterer allerede i dimensionen
-		-- en INSERT ses som en ny række - vi kender ikke borgeren inden denne kørsel	
-		SELECT	@NumberOfNewEntities =	ISNULL(SUM(CASE WHEN mergeAction = ''INSERT'' THEN 1 ELSE 0 END), 0),
-					@NumberOfT1Changes  =	ISNULL(SUM(CASE WHEN mergeAction = ''UPDATE'' THEN 1 ELSE 0 END), 0)
-		FROM #rowcounts  
+			-- Ser en update som en ændring - rækken eksisterer allerede i dimensionen
+			-- en INSERT ses som en ny række - vi kender ikke borgeren inden denne kørsel	
+			SELECT	@NumberOfNewEntities =	ISNULL(SUM(CASE WHEN mergeAction = ''INSERT'' THEN 1 ELSE 0 END), 0),
+						@NumberOfT1Changes  =	ISNULL(SUM(CASE WHEN mergeAction = ''UPDATE'' THEN 1 ELSE 0 END), 0)
+			FROM #rowcounts  
 
-');
+	'
+		
+	END
+	ELSE
+	BEGIN
+	Select @UpdateInsetStatement=
+	'			/* 
+				i staging tabellen er ALLE informationer om en given DW_EK.
+			   Alle ikke allerede slettede rækker i dim slettemarkeres ([DW_IsDeleted] = 1)
+				hvis DW_EK fra stg tabellen findes i dim  og 
+				en given validfrom ikke længere eksisterer for DW_EK i dim
+				(det betyder at der er ændret en ValidFrom dato i kildedata)
+			*/
+		
+			IF (OBJECT_ID(''tempdb..#tempValidCurrent'')<>0)
+			DROP TABLE #tempValidCurrent
+			/*Beregning af ValidFrom og DW_IsCurrent samt tjek af DW_ValidFrom*/
+			SELECT *
+			,DW_ValidFrom=IIF('+@dimValidFromColumn+'=min('+@dimValidFromColumn+') over (PARTITION BY [DW_EK_'+@dimTableName+']),CAST(''00010101'' AS DATETEIME2(3)),'+@dimValidFromColumn+')
+			,DW_ValidTo=ISNULL(LEAD('+@dimValidFromColumn+') OVER (PARTITION BY [DW_EK_'+@dimTableName+'] ORDER BY '+@dimValidFromColumn+' asc),CAST(''99990101'' AS DATETEIME2(3)))
+			,DW_IsCurrent=IIF('+@dimValidFromColumn+'=max('+@dimValidFromColumn+') over (PARTITION BY [DW_EK_'+@dimTableName+']),1,0)
+			,DW_IsDeleted =0
+			Into #tempValidCurrent
+			FROM #stgDim'+@dimTableName+'
+
+			/*Kigger efter de EKer som er i stg tabellen og deletmarkerer alle dem som ikke matcher en validFrom*/
+			UPDATE [a] WITH (TABLOCK)
+				SET	[a].[DW_IsDeleted] = 1
+					  ,[a].[DW_IsCurrent] = 0
+					  ,[a].[DW_ID_Audit_Update] = @DW_ID_Audit
+			FROM [dim].['+@dimTableName+'] [a]
+			INNER JOIN #tempValidCurrent [b]
+			ON	([a].[DW_EK_'+@dimTableName+'] = [b].[DW_EK_'+@dimTableName+'])
+			WHERE NOT EXISTS (
+				SELECT *
+				--Beregn validTo,DW_IsCUrrent,DW_IsDeleted
+				FROM #tempValidCurrent b			  
+				WHERE [a].[DW_EK_'+@dimTableName+'] = [b].[DW_EK_'+@dimTableName+']
+				AND a.[DW_ValidFrom] = [b].[DW_ValidFrom]
+			) 
+			AND [a].[DW_IsDeleted] = 0
+			/*Almindelig merge*/
+			;MERGE [dim].['+@dimTableName+'] WITH (TABLOCK) AS target
+				USING ( 
+					SELECT [sdb].*
+					FROM #ValidCurrent [sdb]
+				
+				) AS source
+			ON ([source].[DW_EK_'+@dimTableName+'] = [target].[DW_EK_'+@dimTableName+'] 
+			AND [source].[DW_ValidFrom] = [target].[DW_ValidFrom])
+			WHEN MATCHED AND
+				(
+				'+REPLACE(@dimColumnListComp, '((target',CHAR(9)+'((target')+'OR 
+				([source].[DW_IsCurrent] <> [target].[DW_IsCurrent] OR ([source].[DW_IsCurrent] IS NULL AND [target].[DW_IsCurrent] IS NOT NULL) OR ([target].[DW_IsCurrent] IS NULL AND [source].[DW_IsCurrent] IS NOT NULL)) OR
+				([source].[DW_ValidTo] <> [target].[DW_ValidTo] OR ([source].[DW_ValidTo] IS NULL AND [target].[DW_ValidTo] IS NOT NULL) OR ([target].[DW_ValidTo] IS NULL AND [source].[DW_ValidTo] IS NOT NULL)) OR
+				([source].[DW_IsDeleted] <> [target].[DW_IsDeleted] OR [target].[DW_IsDeleted] IS NULL)
+				)
+			THEN UPDATE
+				SET '+Replace(@dimColumnListeUpdate,',',CHAR(9)+CHAR(9)+',')+'	
+					,[target].[DW_IsCurrent] = ISNULL([source].[DW_IsCurrent], [target].[DW_IsCurrent])
+					,[target].[DW_ValidTo] = ISNULL([source].[DW_ValidTo],[target].[DW_ValidTo])
+					,[target].[DW_ID_Audit_Update] = @DW_ID_Audit
+					,[target].[DW_IsDeleted] = ISNULL([source].[DW_IsDeleted],[target].[DW_IsDeleted])
+
+            
+			WHEN NOT MATCHED BY TARGET THEN 
+			INSERT (
+				 [DW_EK_'+@dimTableName+']
+				,[CleanCode]
+				,'+Replace(@dimColumnList,',',CHAR(9)+CHAR(9)+',')+'
+			
+				,[DW_ValidFrom]
+				,[DW_ValidTo]
+				,[DW_IsCurrent]
+				,[DW_ID_Audit_Insert]
+				,[DW_ID_Audit_Update]
+				,[DW_IsDeleted]
+
+			)
+			VALUES  (
+				 [source].[DW_EK_'+@dimTableName+']
+				 ,[source].[CleanCode]
+				,'+Replace(REPLACE(@dimColumnList,'[','source.['),',',CHAR(9)+CHAR(9)+',')+'
+			
+				,[source].[DW_ValidFrom]
+				,[source].[DW_ValidTo]
+				,[source].[DW_IsCurrent]
+				,@DW_ID_Audit
+				,@DW_ID_Audit
+				,[source].[DW_IsDeleted]
+
+			)
+			OUTPUT $action INTO #rowcounts;
+
+			-- Ser en update som en ændring - rækken eksisterer allerede i dimensionen
+			-- en INSERT ses som en ny række - vi kender ikke borgeren inden denne kørsel	
+			SELECT	@NumberOfNewEntities =	ISNULL(SUM(CASE WHEN mergeAction = ''INSERT'' THEN 1 ELSE 0 END), 0),
+						@NumberOfT1Changes  =	ISNULL(SUM(CASE WHEN mergeAction = ''UPDATE'' THEN 1 ELSE 0 END), 0)
+			FROM #rowcounts  
+
+	'
+	END
+END
 ELSE
 /*Hvis man ikke har angiver en valifrom så start SP dim.UpdateXXX her*/
 (Select @UpdateInsetStatement='
@@ -1233,5 +1347,3 @@ Nice to have
 */
 
 END
-
-

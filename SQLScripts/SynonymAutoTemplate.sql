@@ -3,14 +3,15 @@ CREATE PROCEDURE [dbo].[AutoSynonymsGenerator]
 @inputvar_DSOdatabase NVARCHAR(100)
 AS
 BEGIN
-DECLARE @dbExec NVARCHAR(100)
+DECLARE @dbExec NVARCHAR(500)
 SET @dbExec=@inputvar_DSOdatabase+N'.sys.sp_executesql' --Execute koden i på en anden databse
 DECLARE @SQL NVARCHAR(MAX)
-DECLARE @table_name NVARCHAR(512)
+DECLARE @table_name NVARCHAR(1024)
 DECLARE @NL char(2)
 SET @NL=CHAR(13)+CHAR(10) --newlines
-
+--Måske vi skal lave en printonly
 /*****************************SYNONYMS********************************************/
+/*finder alle tabeller i DSI */
 SET @SQL=	
 N'	SELECT
 		TABLE_NAME
@@ -33,6 +34,7 @@ N'	SELECT
 	BEGIN
 		
 	SET	@SQL=
+/*Laver en lang liste med create statement*/
 N'IF (OBJECT_ID ('''+@inputvar_DSOdatabase+'.arc.'+@table_name+''') IS NULL)'+@NL+' 
 Create Synonym arc.'+@table_name+N' FOR '+@inputvar_DSIdatabase+N'.arc.'+@table_name
 PRINT(@SQL)	
@@ -43,3 +45,5 @@ EXEC @dbExec @SQL
 	DEALLOCATE Cur                      
 
 END
+
+
